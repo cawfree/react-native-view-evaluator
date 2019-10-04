@@ -34,6 +34,7 @@ class ViewEvaluator extends React.Component {
   onLayoutsAccumulated = (layouts = []) => this.setState(
     {
       evaluating: false,
+      children: [],
     },
   );
   shouldEvaluate = children => this.setState(
