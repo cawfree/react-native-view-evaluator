@@ -31,16 +31,18 @@ export default () => (
       height: null,
     }}
     renderEvaluated={(arrayOfChildren, layouts) => {
-      const maxHeight = layouts
-        .reduce(
-          (v, { height }) => (
-            Math.max(
-              v,
-              height,
-            )
+      const maxHeight = Math.ceil(
+        layouts
+          .reduce(
+            (v, { height }) => (
+              Math.max(
+                v,
+                height,
+              )
+            ),
+            Number.MIN_VALUE,
           ),
-          Number.MIN_VALUE,
-        );
+      );
       return (
         <FlatList
           renderItem={({ item: viewToRender, index }) => (
