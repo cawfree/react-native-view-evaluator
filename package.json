@@ -1,0 +1,21 @@
+{
+  "name": "react-native-view-evaluator",
+  "version": "0.0.1",
+  "keywords": [
+    "react",
+    "react-native",
+    "native",
+    "view",
+    "layout",
+    "evaluate",
+    "before",
+    "render",
+    "size"
+  ],
+  "description": "A React Native <Component /> which can be used to determine the post-layout configuration of a <View />.",
+  "main": "index.js",
+  "repository": "https://github.com/cawfree/react-native-view-evaluator",
+  "author": "Alex Thomas (@cawfree) <hello@cawfree.com>",
+  "license": "MIT",
+  "private": false
+}
