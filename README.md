@@ -2,7 +2,9 @@
 A React Native `<Component />` which can be used to determine the post-layout configuration of a `<View />`.
 
 ## What's the point?
-Sometimes in React Native, it's important to know the dimensions of the content you're going to render, before you actually render it! Take the [`<FlatList/>`](https://facebook.github.io/react-native/docs/flatlist.html); it's important to know your `itemWidth` before you render the content, and it's impossibe to use layout `flex` to fill content; so a `<FlatList/>` which resizes to fill your content is out of the question. Until now at least.
+Sometimes in React Native, it's important to know the dimensions of the content you're going to render, before you actually render it! Take the [`<FlatList/>`](https://facebook.github.io/react-native/docs/flatlist.html); it's important to know your `itemWidth` before you render the content, and it's impossibe to use layout `flex` to fill content; so a `<FlatList/>` which resizes to fill your content is out of the question.
+
+Until now at least.
 
 ## 🚀 Getting Started
 
