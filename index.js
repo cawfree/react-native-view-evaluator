@@ -91,21 +91,21 @@ class ViewEvaluator extends React.Component {
       evaluating,
     } = this.state;
     return (
-      <View
-        {...extraProps}
-      >
-        <View
-          style={[
-            StyleSheet.absoluteFill,
-            {
-              opacity: 0,
-            },
-          ]}
-        >
-          {toBeEvaluated}
-        </View>
+      <>
         {(!!evaluating) && (
-          renderEvaluating()
+          <>
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                {
+                  opacity: 0,
+                },
+              ]}
+            >
+              {toBeEvaluated}
+            </View>
+            {renderEvaluating()}
+          </>
         )}
         {(!evaluating) && (
           renderEvaluated(
@@ -115,7 +115,7 @@ class ViewEvaluator extends React.Component {
             layouts,
           )
         )}
-      </View>
+      </>
     );
   }
 }

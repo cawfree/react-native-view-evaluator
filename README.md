@@ -20,59 +20,95 @@ yarn add react-native-view-evaluator
 
 ## ✍️ Example
 
+Below, we'll create a `<FlatList />` position in the centre of the screen. This will scale to fit the largest rendered `<View />`.
+
 ```javascript
 import React from 'react';
-import { FlatList, View } from 'react-native';
+import PropTypes from 'prop-types';
+import { View, StyleSheet, FlatList, Text, Dimensions } from 'react-native';
+import Evaluate from 'react-native-view-evaluator';
 
-export default () => (
-  <ViewEvaluator
-    style={{
-      width: 100,
-      height: null,
-    }}
-    renderEvaluated={(arrayOfChildren, layouts) => {
-      const maxHeight = Math.ceil(
-        layouts
-          .reduce(
-            (v, { height }) => (
-              Math.max(
-                v,
-                height,
-              )
-            ),
-            Number.MIN_VALUE,
-          ),
-      );
-      return (
-        <FlatList
-          renderItem={({ item: viewToRender, index }) => (
-            <View
-              key={index}
-              style={{
-                width: 100,
-                height: maxHeight,
-              }}
-            >
-              {viewToRender}
-            </View>
-          )}
-          data={arrayOfChildren}
-        />
-      );
-    }}
+const { width } = Dimensions
+  .get('window');
+
+const App = ({ strings }) => (
+  <View
+    style={[
+      StyleSheet.absoluteFill,
+      {
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+    ]}
   >
-    <Text
-      numberOfLines={2}
+    <Evaluate 
+      renderEvaluated={(arrayOfChildren, layouts) => {
+        const height = layouts
+          .reduce(
+            (r, { height }) => Math.max(r, height),
+            Number.NEGATIVE_INFINITY,
+          ) + 10;
+        return (
+          <View
+            style={{
+              width,
+              height,
+            }}
+          >
+            <FlatList
+              itemWidth={width}
+              style={[
+                {
+                  width,
+                  height,
+                  borderWidth: 1,
+                },
+              ]}
+              data={arrayOfChildren}
+              renderItem={({ item, index }) => (
+                item
+              )}
+              horizontal
+              pagingEnabled
+            />
+          </View> 
+        );
+      }}
     >
-      {'There\'s no way to tell how big this content will be until we actually render it, you know?'}
-    </View>
-    <Text
-      numberOfLines={1}
-    >
-      {'So, if you wanted a <FlatList/> to stretch to fill these elements, you\'d be a bit stuck.'}
-    </View>
-  <View>
+      {strings
+        .map(
+          (s, i) => (
+            <Text
+              key={i}
+              style={{
+                width,
+                height: null,
+              }}
+              children={s}
+            />
+          ),
+        )}
+    </Evaluate>
+  </View>
 );
+
+App.propTypes = {
+  strings: PropTypes.arrayOf(
+    PropTypes.string,
+  ),
+};
+
+App.defaultProps = {
+  strings: [
+    'This is a test string.',
+    'This is also a test string, albeit a slightly longer one.',
+    'We don\'t know how big these strings are going to be at render time.',
+    'Which means we couldn\'t wrap them in <FlatList /> to scale to the maximum height',
+    'This is the biggest string of all. This is useful to evaluate whether the rendered <FlatList/> is a giant box that has mostly empty space around all of the pages but this one.',
+  ],
+};
+
+export default App;
 ```
 
 As you can see, once the size of each `<View />` has been calculated, they each get passed as an array to the `renderEvaluated` method, alongside a matching array of the resultan layouts.
