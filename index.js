@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { isEqual, throttle } from 'lodash';
 
 class ViewEvaluator extends React.Component {
   static hasLayouts = (layouts = []) => (
@@ -20,6 +21,10 @@ class ViewEvaluator extends React.Component {
         children,
       ) > 0,
     };
+    this.forceUpdate = throttle(
+      this.forceUpdate,
+      16,
+    );
   }
   createMeasurementContainer = (child, { ...extraProps }) => (
     <View
@@ -123,7 +128,10 @@ class ViewEvaluator extends React.Component {
                       {
                         key: `${i}`,
                         onLayout: ({ nativeEvent: { layout } }) => {
-                          layouts[i] = layout;
+                          if (!isEqual(layouts[i], layout)) {
+                            layouts[i] = layout;
+                            this.forceUpdate();
+                          }
                         },
                       },
                     )
