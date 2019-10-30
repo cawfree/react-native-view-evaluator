@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Alert, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 
 class ViewEvaluator extends React.Component {
   static hasLayouts = (layouts = []) => (
@@ -21,9 +21,9 @@ class ViewEvaluator extends React.Component {
       ) > 0,
     };
   }
-  createMeasurementContainer = (onLayout, child) => (
+  createMeasurementContainer = (child, { ...extraProps }) => (
     <View
-      onLayout={onLayout}
+      {...extraProps}
       removeClippedSubviews={false}
       collapsible={false}
       renderToHardwareTextureAndroid
@@ -51,18 +51,21 @@ class ViewEvaluator extends React.Component {
           (child, i) => (
             this
               .createMeasurementContainer(
-                ({ nativeEvent: { layout } }) => {
-                  const { layouts } = this.state;
-                  layouts[i] = layout;
-                  if (ViewEvaluator.hasLayouts(layouts)) {
-                    const { onLayoutsAccumulated } = this;
-                    return onLayoutsAccumulated(
-                      layouts,
-                    );
-                  }
-                  return null;
-                },
                 child,
+                {
+                  key: `${i}`,
+                  onLayout: ({ nativeEvent: { layout } }) => {
+                    const { layouts } = this.state;
+                    layouts[i] = layout;
+                    if (ViewEvaluator.hasLayouts(layouts)) {
+                      const { onLayoutsAccumulated } = this;
+                      return onLayoutsAccumulated(
+                        layouts,
+                      );
+                    }
+                    return null;
+                  }
+                },
               )
           ),
         ),
@@ -108,11 +111,26 @@ class ViewEvaluator extends React.Component {
           </>
         )}
         {(!evaluating) && (
-          renderEvaluated(
-            React.Children.toArray(
-              children,
+          React.Children.toArray(
+            renderEvaluated(
+              React.Children.toArray(
+                children,
+              )
+                .map(
+                  (child, i) => (
+                    this.createMeasurementContainer(
+                      child,
+                      {
+                        key: `${i}`,
+                        onLayout: ({ nativeEvent: { layout } }) => {
+                          layouts[i] = layout;
+                        },
+                      },
+                    )
+                  ),
+                ),
+              layouts,
             ),
-            layouts,
           )
         )}
       </>
